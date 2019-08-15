@@ -1,13 +1,32 @@
 const express = require('express');
 
-const knex = require('knex');
-const config = require('../knexfile')
-const db = knex(config.development)
+const recipeModel = require('./recipe-model');
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.status(200).json({ this: 'is as test' })
+    recipeModel
+        .getRecipes()
+        .then(result => res.status(200).json(result))
+        .catch(error => res.status(500).json({ error: 'there was one' }))
+})
+
+router.get('/:id/shopping-list', (req, res) => {
+    const id = req.params.id
+
+    recipeModel
+        .getShoppingList(id)
+        .then(result => res.status(200).json(result))
+        .catch(error => res.status(500).json({ error: 'there was one' }))
+})
+
+router.get('/:id/instructions', (req, res) => {
+    const id = req.params.id
+
+    recipeModel
+        .getInstructions(id)
+        .then(result => res.status(200).json(result))
+        .catch(error => res.status(500).json({ error: 'there was one' }))
 })
 
 module.exports = router
