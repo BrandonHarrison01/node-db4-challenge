@@ -3,7 +3,8 @@ const db = require('../data/db-config.js');
 module.exports = {
     getRecipes,
     getShoppingList,
-    getInstructions
+    getInstructions,
+    getRecipeId
 }
 
 function getRecipes() {
@@ -11,11 +12,18 @@ function getRecipes() {
 }
 
 function getShoppingList(recipe_id) {
-    return db('ingredients')
+    return db('ingredients as i')
+        .innerJoin('quantity as q', 'q.ingredient_id', '=', 'i.id')
+        .select('i.ingredient', 'q.quantity')
         .where({ recipe_id })
 }
 
 function getInstructions(recipe_id) {
     return db('instructions')
+        .where({ recipe_id })
+}
+
+function getRecipeId(recipe_id) {
+    return db('recipes')
         .where({ recipe_id })
 }
